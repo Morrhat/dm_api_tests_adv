@@ -15,11 +15,9 @@ class AccountApi:
             json_data: dict[str, str]
     ):
         """
-        POST
-        /v1/account
+        Register new user
         :param json_data:
         :return:
-        Register new user
         """
         response = requests.post(
             url=f'{self.host}/v1/account',
@@ -32,17 +30,44 @@ class AccountApi:
             token
     ):
         """
-        PUT
-        /v1/account/{token}
+        Activate registered user
         :param token:
         :return:
-        Activate registered user
         """
-        headers = {
-            'accept': 'text/plain',
-        }
         response = requests.put(
             url=f'{self.host}/v1/account/{token}',
+        )
+        return response
+
+    def get_v1_account(
+            self,
+            headers: dict[str, str]
+    ):
+        """
+        Get current user
+        :param headers:
+        :return:
+        """
+        response = requests.get(
+            url=f'{self.host}/v1/account',
             headers=headers
+        )
+        return response
+
+    def put_v1_account_email(
+            self,
+            headers: dict[str, str],
+            json_data: dict[str, str]
+    ):
+        """
+        Change email address
+        :param headers:
+        :param json_data:
+        :return:
+        """
+        response = requests.put(
+            url=f'{self.host}/v1/account/email',
+            headers=headers,
+            json=json_data
         )
         return response

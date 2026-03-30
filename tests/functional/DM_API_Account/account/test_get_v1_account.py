@@ -1,3 +1,4 @@
+import json
 from json import loads
 
 from dm_api_account.apis.account_api import AccountApi
@@ -6,12 +7,14 @@ from api_mailhog.apis.mailhog_api import MailhogApi
 
 
 def test_post_v1_account():
-    # Регистрация пользователя
+
     account_api = AccountApi(host='http://185.185.143.231:5051')
     login_api = LoginApi(host='http://185.185.143.231:5051')
     mailhog_api = MailhogApi(host='http://185.185.143.231:5025')
 
-    login = 'Astarion_test_12'
+
+    # Регистрация пользователя
+    login = 'Astarion_test_27'
     password = '1234567890'
     email = f'{login}@mail.com'
 
@@ -59,22 +62,36 @@ def test_post_v1_account():
 
     print(response.status_code)
     print(response.text)
+    # print(response.headers['X-Dm-Auth-Token'])
+    active_token = response.headers['X-Dm-Auth-Token']
     assert response.status_code == 200, f'Пользователь не смог авторизоваться {response.json()}'
 
 
+    # Получить данные текущего пользователя
 
+    headers = {
+        'accept': 'text/plain',
+        'X-Dm-Auth-Token': active_token,
+    }
 
-
-
+    response = account_api.get_v1_account(headers=headers)
+    print(response.status_code)
+    print(response.text)
 
 
 def get_activation_token_by_login(login: str, response):
     token = None
     for item in response.json()['items']:
-        user_data = loads(item['Content']['Body'])
-        user_login = user_data['Login']
+        body = item['Content']['Body']
+        # Проверяем, что body похож на JSON (начинается с '{' или '[')
+        if not isinstance(body, str) or not (body.startswith('{') or body.startswith('[')):
+            continue  # пропускаем не-JSON данные
+        try:
+            user_data = loads(body)
+        except json.JSONDecodeError:
+            continue  # если не распарсилось, пропускаем
+        user_login = user_data.get('Login')
         if user_login == login:
             token = user_data['ConfirmationLinkUrl'].split('/')[-1]
+            break
     return token
-
-

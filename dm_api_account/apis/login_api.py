@@ -15,11 +15,9 @@ class LoginApi:
             json_data: dict[str, str]
     ):
         """
-        POST
-        /v1/account/login
+        Authenticate via credentials
         :param json_data:
         :return:
-        Authenticate via credentials
         """
         response = requests.post(
             url=f'{self.host}/v1/account/login',

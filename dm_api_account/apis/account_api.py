@@ -71,3 +71,33 @@ class AccountApi:
             json=json_data
         )
         return response
+
+    def post_v1_account_password(
+            self,
+            json_data: dict[str, str]
+    ):
+        """
+        Reset registered user password
+        :param json_data:
+        :return:
+        """
+        response = requests.post(
+            url=f'{self.host}/v1/account/password',
+            json=json_data
+        )
+        return response
+
+    def put_v1_account_password(
+            self,
+            json_data: dict[str, str]
+    ):
+        """
+        Change password of registered user
+        :param json_data:
+        :return:
+        """
+        response = requests.put(
+            url=f'{self.host}/v1/account/password',
+            json=json_data
+        )
+        return response

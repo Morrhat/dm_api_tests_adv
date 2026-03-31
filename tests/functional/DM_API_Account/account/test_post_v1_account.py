@@ -14,7 +14,7 @@ def test_post_v1_account():
 
 
     # Регистрация пользователя
-    login = 'Astarion_test_19'
+    login = 'Astarion_test_49'
     password = '1234567890'
     email = f'{login}@mail.com'
 
@@ -26,32 +26,23 @@ def test_post_v1_account():
 
     response = account_api.post_v1_account(json_data=json_data)
     print(response.status_code)
-    print(response.text)
     assert response.status_code == 201, f'Пользователь не был создан {response.json()}'
 
     # Получить письма из почтового сервера
-
     response = mailhog_api.get_api_v2_messages()
-
     print(response.status_code)
-    # print(response.text)
-    # pprint.pprint(response.json())
     assert response.status_code == 200, f'Письма не были получены {response.json()}'
 
     # Получить активационный токен
     token = get_activation_token_by_login(login, response)
-
     assert token is not None, f'Токен не был получен {response.json()}'
 
-    # # Активация пользователя
+    # Активация пользователя
     response = account_api.put_v1_account_token(token=token)
-
     print(response.status_code)
-    print(response.text)
     assert response.status_code == 200, f'Пользователь не был активирован {response.json()}'
 
     # Авторизовать нового пользоваетля
-
     json_data = {
         'login': login,
         'email': email,
@@ -59,15 +50,8 @@ def test_post_v1_account():
     }
 
     response = login_api.post_v1_account_login(json_data=json_data)
-
     print(response.status_code)
-    print(response.text)
     assert response.status_code == 200, f'Пользователь не смог авторизоваться {response.json()}'
-
-
-
-
-
 
 
 
